@@ -20,13 +20,12 @@
       <div class="nav-logo-icon">W</div>
       <div class="nav-logo-text">White House<span>Restaurant · Accra</span></div>
     </div>
-    <div class="nav-links">
+<div class="nav-links">
       <a onclick="showPage('home')" class="active" id="nav-home">Home</a>
       <a onclick="showPage('menu')" id="nav-menu">Menu</a>
       <a onclick="showPage('order')" id="nav-order">Order</a>
       <a onclick="showPage('about')" id="nav-about">About</a>
       <a onclick="showPage('contact')" id="nav-contact">Contact</a>
-      <a onclick="showPage('admin')" id="nav-admin">Admin</a>
     </div>
     <div class="nav-actions">
       <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
@@ -46,7 +45,6 @@
   <a onclick="showPage('order');closeMobileNav()">Order</a>
   <a onclick="showPage('about');closeMobileNav()">About</a>
   <a onclick="showPage('contact');closeMobileNav()">Contact</a>
-  <a onclick="showPage('admin');closeMobileNav()">Admin</a>
 </div>
 
 <!-- CART SIDEBAR -->
@@ -348,58 +346,6 @@
           <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="sendContactForm()">Send Message ✉️</button>
         </div>
       </div>
-    </div>
-  </section>
-</div>
-
-<!-- ===================== ADMIN PAGE ===================== -->
-<div id="page-admin" class="page">
-  <div class="page-header">
-    <h1>Admin Dashboard</h1>
-    <p>Manage orders, menu & restaurant operations</p>
-    <div class="breadcrumb">Home <span>›</span> Admin</div>
-  </div>
-  <section class="section">
-    <div class="container">
-      <div class="admin-grid">
-        <div class="admin-stat"><div class="admin-stat-num" id="stat-orders">0</div><div class="admin-stat-label">Total Orders</div><div class="admin-stat-change">↑ 12% this week</div></div>
-        <div class="admin-stat"><div class="admin-stat-num" id="stat-revenue">GH₵0</div><div class="admin-stat-label">Revenue</div><div class="admin-stat-change">↑ 8% this week</div></div>
-        <div class="admin-stat"><div class="admin-stat-num">47</div><div class="admin-stat-label">Customers</div><div class="admin-stat-change">↑ 5 new today</div></div>
-        <div class="admin-stat"><div class="admin-stat-num">Shrimps</div><div class="admin-stat-label">Popular Meal</div><div class="admin-stat-change">23 orders this week</div></div>
-      </div>
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchAdminTab('orders',this)">📋 Orders</button>
-        <button class="admin-tab" onclick="switchAdminTab('menu',this)">🍽️ Manage Menu</button>
-        <button class="admin-tab" onclick="switchAdminTab('add-food',this)">➕ Add Food</button>
-      </div>
-      <div id="admin-orders">
-        <table class="orders-table" id="orders-table">
-          <thead><tr><th>#</th><th>Customer</th><th>Items</th><th>Total</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody id="orders-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px">No orders yet</td></tr></tbody>
-        </table>
-      </div>
-      <div id="admin-menu" style="display:none">
-        <div class="menu-grid" id="admin-menu-grid"></div>
-      </div>
-      <div id="admin-add-food" style="display:none">
-        <div class="add-food-form">
-          <h3 style="font-family:'Playfair Display',serif;margin-bottom:20px;">Add New Dish</h3>
-          <div class="add-food-grid">
-            <div class="form-group"><label>Dish Name</label><input type="text" id="new-dish-name" placeholder="e.g. Jollof Rice"></div>
-            <div class="form-group"><label>Category</label><select id="new-dish-cat"><option>Main Meals</option><option>Rice Dishes</option><option>Seafood</option><option>Local Dishes</option><option>Drinks</option><option>Special Offers</option></select></div>
-            <div class="form-group"><label>Price (GH₵)</label><input type="number" id="new-dish-price" placeholder="e.g. 80"></div>
-            <div class="form-group"><label>Emoji Icon</label><input type="text" id="new-dish-emoji" placeholder="🍚"></div>
-          </div>
-          <div class="form-group"><label>Description</label><textarea id="new-dish-desc" placeholder="Describe the dish…"></textarea></div>
-          <div class="form-group">
-            <label>Special Tag (optional)</label>
-            <select id="new-dish-tag"><option value="">None</option><option value="NEW">NEW</option><option value="HOT">HOT</option><option value="OFFER">OFFER</option></select>
-          </div>
-          <button class="btn btn-gold" onclick="addNewDish()">➕ Add to Menu</button>
-        </div>
-      </div>
-    </div>
-  </section>
 </div>
 
 <!-- RECEIPT MODAL -->

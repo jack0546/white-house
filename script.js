@@ -37,7 +37,6 @@ function showPage(page) {
   if (bnavEl) bnavEl.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (page === 'order') renderCheckout();
-  if (page === 'admin') updateAdminStats();
   if (page === 'menu') renderFullMenu('All');
 }
 
@@ -244,6 +243,67 @@ function selectDelivery(mode) {
   renderCheckout();
 }
 
+function initiatePayment() {
+  const name = document.getElementById('cust-name').value.trim();
+  const phone = document.getElementById('cust-phone').value.trim();
+  const email = document.getElementById('cust-email').value.trim();
+  const address = document.getElementById('cust-address').value.trim();
+  
+  if (!name) { showToast('⚠️ Please enter your name.'); return; }
+  if (!phone) { showToast('⚠️ Please enter your phone number.'); return; }
+  if (!email) { showToast('⚠️ Please enter your email for payment.'); return; }
+  if (deliveryMode === 'delivery' && !address) { showToast('⚠️ Please enter your delivery address.'); return; }
+  if (cart.length === 0) { showToast('⚠️ Your cart is empty!'); return; }
+  
+  const sub = getSubtotal();
+  const fee = deliveryMode === 'delivery' ? DELIVERY_FEE : 0;
+  const grand = sub + fee;
+  
+  const handler = PaystackPop.setup({
+    key: 'pk_live_6b9968065dc0bd4842c97ffa138e49127c862888',
+    email: email,
+    amount: grand * 100,
+    currency: 'GHS',
+    ref: 'WHR-' + Date.now(),
+    metadata: {
+      customer_name: name,
+      customer_phone: phone,
+      delivery_address: deliveryMode === 'delivery' ? address : deliveryMode.toUpperCase(),
+      order_type: deliveryMode
+    },
+    callback: function(response) {
+      const orderNum = response.reference;
+      const order = { 
+        num: orderNum, 
+        name, 
+        phone, 
+        address, 
+        items: [...cart], 
+        sub, 
+        fee, 
+        grand, 
+        type: deliveryMode, 
+        status: 'Paid', 
+        date: new Date().toLocaleDateString('en-GB'), 
+        notes: document.getElementById('order-notes').value,
+        email: email,
+        transaction: response.transaction
+      };
+      orders.push(order);
+      showReceipt(order, true);
+      cart = [];
+      updateCartCount();
+      renderCart();
+      updateAdminStats();
+      showToast('✅ Payment successful! Order placed.');
+    },
+    onClose: function() {
+      showToast('⚠️ Payment cancelled. You can try again.');
+    }
+  });
+  handler.openIframe();
+}
+
 function renderCheckout() {
   const itemsList = document.getElementById('checkout-items-list');
   const totalsEl = document.getElementById('checkout-totals');
@@ -294,30 +354,14 @@ function updateWhatsAppLink() {
 }
 
 function placeOrder() {
-  const name = document.getElementById('cust-name').value.trim();
-  const phone = document.getElementById('cust-phone').value.trim();
-  const address = document.getElementById('cust-address').value.trim();
-  if (!name) { showToast('⚠️ Please enter your name.'); return; }
-  if (!phone) { showToast('⚠️ Please enter your phone number.'); return; }
-  if (deliveryMode === 'delivery' && !address) { showToast('⚠️ Please enter your delivery address.'); return; }
-  if (cart.length === 0) { showToast('⚠️ Your cart is empty!'); return; }
-  const orderNum = 'WHR-' + Date.now().toString().slice(-6);
-  const sub = getSubtotal();
-  const fee = deliveryMode === 'delivery' ? DELIVERY_FEE : 0;
-  const grand = sub + fee;
-  const order = { num: orderNum, name, phone, address, items: [...cart], sub, fee, grand, type: deliveryMode, status: 'Pending', date: new Date().toLocaleDateString('en-GB'), notes: document.getElementById('order-notes').value };
-  orders.push(order);
-  showReceipt(order);
-  cart = [];
-  updateCartCount();
-  renderCart();
-  updateAdminStats();
+  initiatePayment();
 }
 
 // ======= RECEIPT =======
-function showReceipt(order) {
+function showReceipt(order, isPaid = false) {
   const modal = document.getElementById('receipt-modal');
   const content = document.getElementById('receipt-content');
+  const statusBadge = isPaid ? '✅ Paid' : '✅ Order Received';
   content.innerHTML = `
     <div class="receipt-header">
       <div class="receipt-logo">WHITE HOUSE RESTAURANT<span>Accra, Ghana</span></div>
@@ -344,14 +388,14 @@ function showReceipt(order) {
       <div class="receipt-total-line"><span>Delivery Fee</span><span>${order.fee > 0 ? 'GH₵' + order.fee : 'Free'}</span></div>
       <div class="receipt-total-line grand"><span>Grand Total</span><span class="rv">GH₵${order.grand}</span></div>
     </div>
-    <div class="receipt-status"><span class="receipt-status-badge">✅ Order Received</span></div>
+    <div class="receipt-status"><span class="receipt-status-badge">${statusBadge}</span></div>
     ${order.notes ? `<p style="font-size:0.8rem;color:#6B5A3A;margin:8px 0"><strong>Notes:</strong> ${order.notes}</p>` : ''}
     <div class="receipt-footer">
       <p>Thank you for your order! 🙏</p>
-      <p style="margin-top:4px">We'll confirm via WhatsApp shortly.</p>
+      <p style="margin-top:4px">Payment confirmed via Paystack.</p>
       <p style="margin-top:4px;color:#C9A84C">White House Restaurant · Osu, Accra</p>
     </div>`;
-  const waMsg = encodeURIComponent(`Order # ${order.num} receipt from White House Restaurant — GH₵${order.grand} total.`);
+  const waMsg = encodeURIComponent(`Order # ${order.num} receipt from White House Restaurant — GH₵${order.grand} total. Payment: Confirmed via Paystack.`);
   document.getElementById('wa-receipt-btn').onclick = () => window.open(`https://wa.me/?text=${waMsg}`, '_blank');
   modal.classList.add('open');
 }
@@ -366,77 +410,6 @@ function downloadReceipt() {
     a.href = canvas.toDataURL('image/jpeg', 0.95);
     a.click();
   });
-}
-
-// ======= ADMIN =======
-function switchAdminTab(tab, btn) {
-  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('admin-orders').style.display = tab === 'orders' ? 'block' : 'none';
-  document.getElementById('admin-menu').style.display = tab === 'menu' ? 'block' : 'none';
-  document.getElementById('admin-add-food').style.display = tab === 'add-food' ? 'block' : 'none';
-  if (tab === 'menu') renderAdminMenu();
-  if (tab === 'orders') renderAdminOrders();
-}
-
-function renderAdminOrders() {
-  const tbody = document.getElementById('orders-tbody');
-  if (orders.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px">No orders yet</td></tr>';
-    return;
-  }
-  const statusClasses = { 'Pending':'status-pending','Confirmed':'status-confirmed','Preparing':'status-preparing','Out for Delivery':'status-delivery','Delivered':'status-delivered' };
-tbody.innerHTML = orders.map((o, idx) => `
-     <tr>
-       <td style="font-weight:600;font-size:0.8rem">${o.num}</td>
-       <td>${o.name}<br><span style="font-size:0.8rem;color:var(--text-muted)">${o.phone}</span></td>
-       <td>${o.items.map(i => {
-         const imgSrc = IMAGE_MAP[i.name] ? `menu-images/${IMAGE_MAP[i.name]}` : null;
-         return imgSrc ? `<img src="${imgSrc}" style="width:16px;height:16px;vertical-align:middle;">` : (i.emoji || '🍽️');
-       }).join('')} <span style="font-size:0.8rem">${o.items.length} item${o.items.length>1?'s':''}</span></td>
-       <td style="font-weight:700;color:var(--gold)">GH₵${o.grand}</td>
-       <td style="text-transform:capitalize">${o.type}</td>
-       <td><span class="status-badge ${statusClasses[o.status]||'status-pending'}">${o.status}</span></td>
-       <td>
-         <select onchange="updateOrderStatus(${idx},this.value)" style="font-size:0.8rem;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:var(--white);color:var(--text)">
-           ${['Pending','Confirmed','Preparing','Out for Delivery','Delivered'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
-         </select>
-       </td>
-     </tr>`).join('');
-}
-
-function updateOrderStatus(idx, status) {
-  orders[idx].status = status;
-  renderAdminOrders();
-  showToast('✅ Order status updated!');
-}
-
-function renderAdminMenu() {
-  document.getElementById('admin-menu-grid').innerHTML = MENU_DATA.map(i => renderMenuCard(i, true)).join('');
-}
-
-function deleteMenuItem(id) {
-  const idx = MENU_DATA.findIndex(i => i.id === id);
-  if (idx > -1) { MENU_DATA.splice(idx, 1); renderAdminMenu(); showToast('🗑️ Item removed from menu'); }
-}
-
-function addNewDish() {
-  const name = document.getElementById('new-dish-name').value.trim();
-  const cat = document.getElementById('new-dish-cat').value;
-  const price = parseFloat(document.getElementById('new-dish-price').value);
-  const emoji = document.getElementById('new-dish-emoji').value.trim() || '🍽️';
-  const desc = document.getElementById('new-dish-desc').value.trim();
-  const badge = document.getElementById('new-dish-tag').value;
-  if (!name || !price) { showToast('⚠️ Please fill in name and price.'); return; }
-  const newId = Math.max(...MENU_DATA.map(i=>i.id)) + 1;
-  MENU_DATA.push({ id: newId, name, cat, price, emoji, desc: desc || 'Freshly prepared dish.', badge: badge || undefined });
-  ['new-dish-name','new-dish-price','new-dish-emoji','new-dish-desc'].forEach(id => document.getElementById(id).value = '');
-  showToast('✅ ' + name + ' added to menu!');
-}
-
-function updateAdminStats() {
-  document.getElementById('stat-orders').textContent = orders.length;
-  document.getElementById('stat-revenue').textContent = 'GH₵' + orders.reduce((s,o) => s + o.grand, 0);
 }
 
 // ======= CONTACT FORM =======

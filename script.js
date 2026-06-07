@@ -19,7 +19,6 @@ const MENU_DATA = [
 ];
 
 let cart = [];
-let orders = [];
 let deliveryMode = 'delivery';
 let isDark = false;
 const DELIVERY_FEE = 15;
@@ -172,10 +171,7 @@ function renderMenuCard(item, showDelete = false) {
       <div class="menu-card-desc">${item.desc}</div>
       <div class="menu-card-footer">
         <span class="menu-card-price">GH₵${item.price}</span>
-        <div style="display:flex;gap:6px">
-          ${showDelete ? `<button class="add-to-cart-btn" style="background:var(--red);color:white" onclick="deleteMenuItem(${item.id})" title="Delete">🗑️</button>` : ''}
-          <button class="add-to-cart-btn" onclick='addToCart({name:"${item.name.replace(/"/g,"'")}",price:${item.price},emoji:"${item.emoji||'🍽️'}"})'  title="Add to cart">+</button>
-        </div>
+        <button class="add-to-cart-btn" onclick='addToCart({name:"${item.name.replace(/"/g,"'")}",price:${item.price},emoji:"${item.emoji||'🍽️'}"})' title="Add to cart">+</button>
       </div>
     </div>
   </div>`;
@@ -281,20 +277,18 @@ function initiatePayment() {
         items: [...cart], 
         sub, 
         fee, 
-        grand, 
-        type: deliveryMode, 
-        status: 'Paid', 
-        date: new Date().toLocaleDateString('en-GB'), 
+        grand,
+        type: deliveryMode,
+        status: 'Paid',
+        date: new Date().toLocaleDateString('en-GB'),
         notes: document.getElementById('order-notes').value,
         email: email,
         transaction: response.transaction
       };
-      orders.push(order);
       showReceipt(order, true);
       cart = [];
       updateCartCount();
       renderCart();
-      updateAdminStats();
       showToast('✅ Payment successful! Order placed.');
     },
     onClose: function() {
@@ -432,7 +426,7 @@ renderCheckout();
 
 // Listen for order page checkout input changes
 document.addEventListener('input', e => {
-  if (['cust-name','cust-phone','cust-address','order-notes'].includes(e.target.id)) {
+  if (['cust-name','cust-phone','cust-address','order-notes','cust-email'].includes(e.target.id)) {
     updateWhatsAppLink();
     renderCheckout();
   }

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>White House Restaurant – Osu, Accra | Fine Dining & Delivery</title>
+<meta name="description" content="White House Restaurant in Osu Badu Street, Accra. Authentic Ghanaian cuisine with dine-in, takeaway and delivery. Order online now.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">W</div>
+      <div class="nav-logo-text">White House<span>Restaurant · Accra</span></div>
+    </div>
+    <div class="nav-links">
+      <a onclick="showPage('home')" class="active" id="nav-home">Home</a>
+      <a onclick="showPage('menu')" id="nav-menu">Menu</a>
+      <a onclick="showPage('order')" id="nav-order">Order</a>
+      <a onclick="showPage('about')" id="nav-about">About</a>
+      <a onclick="showPage('contact')" id="nav-contact">Contact</a>
+      <a onclick="showPage('admin')" id="nav-admin">Admin</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      <button class="cart-btn" onclick="toggleCart()" title="Cart">🛒<span class="cart-count" id="cart-count">0</span></button>
+      <button class="hamburger" onclick="openMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+  <a onclick="showPage('home');closeMobileNav()">Home</a>
+  <a onclick="showPage('menu');closeMobileNav()">Menu</a>
+  <a onclick="showPage('order');closeMobileNav()">Order</a>
+  <a onclick="showPage('about');closeMobileNav()">About</a>
+  <a onclick="showPage('contact');closeMobileNav()">Contact</a>
+  <a onclick="showPage('admin');closeMobileNav()">Admin</a>
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <h3>🛒 Your Order</h3>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items-container">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🍽️</div>
+      <p>Your cart is empty</p>
+      <p style="font-size:0.85rem;color:var(--text-light);margin-top:4px">Add some delicious items!</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-totals" id="cart-totals"></div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center;font-size:1rem;" onclick="showPage('order');toggleCart()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- ===================== HOME PAGE ===================== -->
+<div id="page-home" class="page active">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-pattern"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span class="hero-stars">★★★★☆</span>
+          <span>4.1 Rating · 255 Reviews</span>
+        </div>
+        <h1 class="hero-title">Taste the Soul<br>of <em>Accra</em></h1>
+        <p class="hero-desc">Authentic Ghanaian cuisine and seafood excellence at Osu Badu Street. From peppered goat head to fresh shrimp stew — every dish is a story.</p>
+        <div class="hero-actions">
+          <button class="btn btn-gold" onclick="showPage('menu')">🍽️ View Menu</button>
+          <button class="btn btn-outline" onclick="showPage('order')">📦 Order Now</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item"><div class="stat-num">255+</div><div class="stat-label">Reviews</div></div>
+          <div class="stat-item"><div class="stat-num">4.1★</div><div class="stat-label">Rating</div></div>
+          <div class="stat-item"><div class="stat-num">GH₵50</div><div class="stat-label">Starting from</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card-main">
+          <img src="menu-images/goat-head-prepared.jpg" alt="Goat Head Peppered" style="width:90px;height:90px;border-radius:12px;object-fit:cover;">
+          <div class="hero-dish-info">
+            <h3>Goat Head Peppered</h3>
+            <p>Slow-cooked with hot peppers & spices. A Ghanaian classic.</p>
+            <div class="hero-dish-price">GH₵120</div>
+          </div>
+        </div>
+        <div class="hero-cards-grid">
+          <div class="hero-mini-card" onclick="addToCart({name:'Shrimps Stew with Fried Plantain & Rice',price:150,emoji:'🦐'})">
+            <div class="hero-mini-emoji">🦐</div>
+            <div class="hero-mini-info"><p>Shrimps Stew & Rice</p><p>GH₵150</p></div>
+          </div>
+          <div class="hero-mini-card" onclick="addToCart({name:'Ice Black Coffee',price:25,emoji:'🧋'})">
+            <div class="hero-mini-emoji">🧋</div>
+            <div class="hero-mini-info"><p>Ice Black</p><p>GH₵25</p></div>
+          </div>
+          <div class="hero-mini-card" onclick="addToCart({name:'Jollof Rice with Chicken',price:80,emoji:'🍚'})">
+            <div class="hero-mini-emoji">🍚</div>
+            <div class="hero-mini-info"><p>Jollof Rice</p><p>GH₵80</p></div>
+          </div>
+          <div class="hero-mini-card" onclick="addToCart({name:'Grilled Tilapia',price:130,emoji:'🐟'})">
+            <div class="hero-mini-emoji">🐟</div>
+            <div class="hero-mini-info"><p>Grilled Tilapia</p><p>GH₵130</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES BAR -->
+  <div class="services-bar">
+    <div class="services-bar-inner">
+      <div class="service-item"><span class="service-icon">🍽️</span> Dine-In Available</div>
+      <div class="service-item"><span class="service-icon">📦</span> Takeaway Ready</div>
+      <div class="service-item"><span class="service-icon">🛵</span> Delivery in Accra</div>
+      <div class="service-item"><span class="service-icon">📍</span> Osu Badu Street, Accra</div>
+    </div>
+  </div>
+
+  <!-- FEATURED -->
+  <section class="section">
+    <div class="container">
+      <span class="section-label">⭐ Chef's Recommendation</span>
+      <div class="featured-section">
+        <img src="menu-images/Shrimps-Stew-with-Fried-Plantain-&-Rice.jpg" alt="Shrimps Stew" style="width:100px;height:100px;border-radius:12px;object-fit:cover;">
+        <div class="featured-content">
+          <span class="featured-tag">🔥 Most Popular</span>
+          <h2 class="featured-title">Shrimps Stew with<br>Fried Plantain & Rice</h2>
+          <p class="featured-desc">Tender shrimps slow-cooked in a rich tomato-pepper stew, served with crispy fried plantains and steaming jasmine rice. A symphony of Ghanaian coastal flavors.</p>
+          <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+            <div class="featured-price">GH₵150</div>
+            <button class="btn btn-gold" onclick="addToCart({name:'Shrimps Stew with Fried Plantain & Rice',price:150,emoji:'🦐'})">+ Add to Cart</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPECIAL OFFER -->
+      <div class="offer-banner">
+        <div class="offer-banner-text">
+          <h3>🎉 Weekend Special – Free Delivery!</h3>
+          <p>Order above GH₵200 on weekends and enjoy free delivery within Osu & nearby areas.</p>
+        </div>
+        <button class="btn btn-dark" onclick="showPage('menu')">Order Now →</button>
+      </div>
+
+      <!-- POPULAR ITEMS GRID -->
+      <span class="section-label">Popular Dishes</span>
+      <h2 class="section-title">Crowd Favourites</h2>
+      <div class="menu-grid" id="home-menu-grid"></div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section" style="background: var(--white);">
+    <div class="container">
+      <span class="section-label">What People Say</span>
+      <h2 class="section-title">Customer Reviews</h2>
+      <p class="section-sub" style="margin-bottom:40px">Over 255 happy customers have shared their experiences with us.</p>
+      <div class="reviews-grid" id="reviews-container"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== MENU PAGE ===================== -->
+<div id="page-menu" class="page">
+  <div class="page-header">
+    <h1>Our Menu</h1>
+    <p>Explore authentic Ghanaian cuisine crafted with passion</p>
+    <div class="breadcrumb">Home <span>›</span> Menu</div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="search-bar">
+        <input class="search-input" type="text" placeholder="🔍  Search dishes…" oninput="searchMenu(this.value)" id="menu-search">
+      </div>
+      <div class="menu-filter" id="menu-filter"></div>
+      <div class="menu-grid" id="full-menu-grid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== ORDER PAGE ===================== -->
+<div id="page-order" class="page">
+  <div class="page-header">
+    <h1>Place Your Order</h1>
+    <p>Fast, fresh, and delivered to your door</p>
+    <div class="breadcrumb">Home <span>›</span> Order</div>
+  </div>
+  <section class="section">
+    <div class="container checkout-section">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:16px;">Delivery Option</h3>
+      <div class="delivery-toggle">
+        <div class="delivery-opt active" id="opt-delivery" onclick="selectDelivery('delivery')">
+          <div class="opt-icon">🛵</div>
+          <div class="opt-label">Delivery</div>
+          <div style="font-size:0.75rem;color:var(--text-light);margin-top:3px">GH₵15 fee</div>
+        </div>
+        <div class="delivery-opt" id="opt-pickup" onclick="selectDelivery('pickup')">
+          <div class="opt-icon">🏃</div>
+          <div class="opt-label">Pickup</div>
+          <div style="font-size:0.75rem;color:var(--text-light);margin-top:3px">Free</div>
+        </div>
+        <div class="delivery-opt" id="opt-dinein" onclick="selectDelivery('dinein')">
+          <div class="opt-icon">🍽️</div>
+          <div class="opt-label">Dine-In</div>
+          <div style="font-size:0.75rem;color:var(--text-light);margin-top:3px">Free</div>
+        </div>
+      </div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:16px;">Customer Details</h3>
+      <div class="checkout-grid">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="cust-name" placeholder="e.g. Kofi Mensah">
+        </div>
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" id="cust-phone" placeholder="+233 XX XXX XXXX">
+        </div>
+      </div>
+      <div class="form-group" id="address-group">
+        <label>Delivery Address *</label>
+        <input type="text" id="cust-address" placeholder="e.g. 12 Airport Rd, East Legon, Accra">
+      </div>
+      <div class="form-group">
+        <label>Email Address (optional)</label>
+        <input type="email" id="cust-email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label>Order Notes</label>
+        <textarea id="order-notes" placeholder="Any special requests, allergies or instructions…"></textarea>
+      </div>
+      <div class="cart-summary-box">
+        <h4 style="font-family:'Playfair Display',serif;margin-bottom:16px;">Order Summary</h4>
+        <div id="checkout-items-list"></div>
+        <div id="checkout-totals"></div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;">
+        <button class="btn btn-gold" style="flex:1;justify-content:center;font-size:1rem;" onclick="placeOrder()">✅ Place Order</button>
+        <a class="btn btn-outline" style="flex:1;justify-content:center;font-size:1rem;" id="whatsapp-order-btn" target="_blank">💬 Send via WhatsApp</a>
+      </div>
+      <p style="font-size:0.8rem;color:var(--text-light);margin-top:12px;text-align:center;">By placing an order you agree to our terms. We'll confirm via WhatsApp or call.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== ABOUT PAGE ===================== -->
+<div id="page-about" class="page">
+  <div class="page-header">
+    <h1>About Us</h1>
+    <p>Our story, mission & passion for Ghanaian food</p>
+    <div class="breadcrumb">Home <span>›</span> About</div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <span class="section-label">Our Story</span>
+          <h2 class="section-title">A Legacy of Flavour in the Heart of Osu</h2>
+          <p style="color:var(--text-muted);line-height:1.9;margin-bottom:20px">White House Restaurant has been serving authentic Ghanaian cuisine to the vibrant community of Osu, Accra for years. Founded on the belief that good food brings people together, we pride ourselves on using fresh, locally sourced ingredients to craft dishes that honour our rich culinary heritage.</p>
+          <p style="color:var(--text-muted);line-height:1.9;margin-bottom:28px">From the smoky aroma of our peppered goat head to the refreshing sweetness of fresh seafood, every plate tells a story of Ghana's diverse food culture.</p>
+          <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:28px;">
+            <div><div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);font-weight:700">255+</div><div style="font-size:0.85rem;color:var(--text-muted)">Happy Reviews</div></div>
+            <div><div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);font-weight:700">4.1★</div><div style="font-size:0.85rem;color:var(--text-muted)">Average Rating</div></div>
+            <div><div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);font-weight:700">50+</div><div style="font-size:0.85rem;color:var(--text-muted)">Menu Items</div></div>
+          </div>
+          <div class="services-list">
+            <div class="service-card"><div class="service-card-icon">🍽️</div><div class="service-card-title">Dine-In</div></div>
+            <div class="service-card"><div class="service-card-icon">📦</div><div class="service-card-title">Takeaway</div></div>
+            <div class="service-card"><div class="service-card-icon">🛵</div><div class="service-card-title">Delivery</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="about-visual">
+            <div class="about-big-emoji">🍽️</div>
+            <h3 style="font-family:'Playfair Display',serif;margin-bottom:8px;">Opening Hours</h3>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:20px">We're open 7 days a week</p>
+            <div class="hours-grid">
+              <div class="hours-row"><span class="hours-day">Monday – Friday</span><span class="hours-time">7:00 AM – 10:00 PM</span></div>
+              <div class="hours-row"><span class="hours-day">Saturday</span><span class="hours-time">8:00 AM – 11:00 PM</span></div>
+              <div class="hours-row"><span class="hours-day">Sunday</span><span class="hours-time">9:00 AM – 9:00 PM</span></div>
+              <div class="hours-row"><span class="hours-day">Public Holidays</span><span class="hours-time">9:00 AM – 8:00 PM</span></div>
+            </div>
+          </div>
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-top:20px;">
+            <h4 style="font-family:'Playfair Display',serif;margin-bottom:14px;">Our Mission</h4>
+            <p style="color:var(--text-muted);font-size:0.95rem;line-height:1.8">"To celebrate Ghana's rich culinary heritage by serving authentic, freshly prepared meals that connect people — one plate at a time."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== CONTACT PAGE ===================== -->
+<div id="page-contact" class="page">
+  <div class="page-header">
+    <h1>Contact Us</h1>
+    <p>We'd love to hear from you</p>
+    <div class="breadcrumb">Home <span>›</span> Contact</div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+        <div>
+          <div class="contact-info-card">
+            <div class="contact-info-title">📍 Visit Us</div>
+            <div class="contact-info-row"><span class="contact-info-icon">📍</span><span>Osu Badu Street, Accra, Ghana<br><span style="font-size:0.8rem;color:var(--text-light)">Digital Address: JR73+GG Accra</span></span></div>
+            <div class="contact-info-row"><span class="contact-info-icon">📞</span><a href="tel:+233244107536" style="color:var(--gold)">+233 24 410 7536</a></div>
+            <div class="contact-info-row"><span class="contact-info-icon">⭐</span><span>4.1/5 Rating · 255 Reviews</span></div>
+            <div class="contact-info-row"><span class="contact-info-icon">💰</span><span>GH₵50 – GH₵250</span></div>
+          </div>
+          <div class="contact-btns">
+            <a href="https://wa.me/233244107536?text=Hello%20White%20House%20Restaurant!" target="_blank" class="btn btn-gold" style="flex:1;justify-content:center;">💬 WhatsApp</a>
+            <a href="tel:+233244107536" class="btn btn-outline" style="flex:1;justify-content:center;">📞 Call Us</a>
+          </div>
+          <div class="map-embed" onclick="window.open('https://maps.google.com/?q=Osu+Badu+Street+Accra+Ghana','_blank')">
+            <div class="map-embed-icon">🗺️</div>
+            <p style="font-weight:600;">Osu Badu Street, Accra</p>
+            <p style="font-size:0.8rem;">Click to open in Google Maps</p>
+            <p style="font-size:0.75rem;color:var(--text-light);">Digital Address: JR73+GG Accra</p>
+          </div>
+        </div>
+        <div class="contact-form-card">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:24px;">Send Us a Message</h3>
+          <div class="checkout-grid">
+            <div class="form-group"><label>Your Name</label><input type="text" id="contact-name" placeholder="Full name"></div>
+            <div class="form-group"><label>Phone / Email</label><input type="text" id="contact-contact" placeholder="Phone or email"></div>
+          </div>
+          <div class="form-group"><label>Subject</label><select id="contact-subject"><option>General Enquiry</option><option>Table Reservation</option><option>Catering / Events</option><option>Feedback</option><option>Other</option></select></div>
+          <div class="form-group"><label>Message</label><textarea id="contact-message" placeholder="How can we help you?" style="min-height:120px"></textarea></div>
+          <button class="btn btn-gold" style="width:100%;justify-content:center;" onclick="sendContactForm()">Send Message ✉️</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===================== ADMIN PAGE ===================== -->
+<div id="page-admin" class="page">
+  <div class="page-header">
+    <h1>Admin Dashboard</h1>
+    <p>Manage orders, menu & restaurant operations</p>
+    <div class="breadcrumb">Home <span>›</span> Admin</div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="admin-grid">
+        <div class="admin-stat"><div class="admin-stat-num" id="stat-orders">0</div><div class="admin-stat-label">Total Orders</div><div class="admin-stat-change">↑ 12% this week</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" id="stat-revenue">GH₵0</div><div class="admin-stat-label">Revenue</div><div class="admin-stat-change">↑ 8% this week</div></div>
+        <div class="admin-stat"><div class="admin-stat-num">47</div><div class="admin-stat-label">Customers</div><div class="admin-stat-change">↑ 5 new today</div></div>
+        <div class="admin-stat"><div class="admin-stat-num">Shrimps</div><div class="admin-stat-label">Popular Meal</div><div class="admin-stat-change">23 orders this week</div></div>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('orders',this)">📋 Orders</button>
+        <button class="admin-tab" onclick="switchAdminTab('menu',this)">🍽️ Manage Menu</button>
+        <button class="admin-tab" onclick="switchAdminTab('add-food',this)">➕ Add Food</button>
+      </div>
+      <div id="admin-orders">
+        <table class="orders-table" id="orders-table">
+          <thead><tr><th>#</th><th>Customer</th><th>Items</th><th>Total</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="orders-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px">No orders yet</td></tr></tbody>
+        </table>
+      </div>
+      <div id="admin-menu" style="display:none">
+        <div class="menu-grid" id="admin-menu-grid"></div>
+      </div>
+      <div id="admin-add-food" style="display:none">
+        <div class="add-food-form">
+          <h3 style="font-family:'Playfair Display',serif;margin-bottom:20px;">Add New Dish</h3>
+          <div class="add-food-grid">
+            <div class="form-group"><label>Dish Name</label><input type="text" id="new-dish-name" placeholder="e.g. Jollof Rice"></div>
+            <div class="form-group"><label>Category</label><select id="new-dish-cat"><option>Main Meals</option><option>Rice Dishes</option><option>Seafood</option><option>Local Dishes</option><option>Drinks</option><option>Special Offers</option></select></div>
+            <div class="form-group"><label>Price (GH₵)</label><input type="number" id="new-dish-price" placeholder="e.g. 80"></div>
+            <div class="form-group"><label>Emoji Icon</label><input type="text" id="new-dish-emoji" placeholder="🍚"></div>
+          </div>
+          <div class="form-group"><label>Description</label><textarea id="new-dish-desc" placeholder="Describe the dish…"></textarea></div>
+          <div class="form-group">
+            <label>Special Tag (optional)</label>
+            <select id="new-dish-tag"><option value="">None</option><option value="NEW">NEW</option><option value="HOT">HOT</option><option value="OFFER">OFFER</option></select>
+          </div>
+          <button class="btn btn-gold" onclick="addNewDish()">➕ Add to Menu</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="receipt-modal" id="receipt-modal">
+  <div class="receipt-box">
+    <div id="receipt-content"></div>
+    <div class="receipt-actions">
+      <button class="btn btn-dark" onclick="downloadReceipt()">⬇️ Save JPEG</button>
+      <button class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
+      <button class="btn btn-gold" id="wa-receipt-btn" target="_blank">💬 Share via WhatsApp</button>
+      <button class="btn" style="background:var(--white);border:1px solid var(--border);" onclick="closeReceipt()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV (MOBILE) -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bnav-item active" onclick="showPage('home')" id="bnav-home"><div class="bnav-icon">🏠</div><div>Home</div></div>
+    <div class="bnav-item" onclick="showPage('menu')" id="bnav-menu"><div class="bnav-icon">🍽️</div><div>Menu</div></div>
+    <div class="bnav-item" onclick="showPage('order')" id="bnav-order"><div class="bnav-icon">📦</div><div>Order</div></div>
+    <div class="bnav-item" onclick="showPage('about')" id="bnav-about"><div class="bnav-icon">ℹ️</div><div>About</div></div>
+    <div class="bnav-item" onclick="toggleCart()" id="bnav-cart" style="position:relative"><div class="bnav-icon">🛒</div><div>Cart</div></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toast-msg">Item added to cart!</span>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>White House Restaurant</h3>
+        <p>Authentic Ghanaian cuisine in the heart of Osu, Accra. Dine-in, takeaway, and delivery available.</p>
+        <div style="margin-top:16px;display:flex;gap:10px;">
+          <a href="https://wa.me/233244107536" target="_blank" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:var(--gold);padding:8px 14px;border-radius:6px;font-size:0.85rem;">💬 WhatsApp</a>
+          <a href="tel:+233244107536" style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);color:var(--gold);padding:8px 14px;border-radius:6px;font-size:0.85rem;">📞 Call</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a onclick="showPage('home')">Home</a></li>
+          <li><a onclick="showPage('menu')">Menu</a></li>
+          <li><a onclick="showPage('order')">Order Online</a></li>
+          <li><a onclick="showPage('about')">About Us</a></li>
+          <li><a onclick="showPage('contact')">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Menu</h4>
+        <ul>
+          <li><a onclick="showPage('menu');filterCategory('Main Meals')">Main Meals</a></li>
+          <li><a onclick="showPage('menu');filterCategory('Seafood')">Seafood</a></li>
+          <li><a onclick="showPage('menu');filterCategory('Rice Dishes')">Rice Dishes</a></li>
+          <li><a onclick="showPage('menu');filterCategory('Drinks')">Drinks</a></li>
+          <li><a onclick="showPage('menu');filterCategory('Local Dishes')">Local Dishes</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a>📍 Osu Badu St, Accra</a></li>
+          <li><a href="tel:+233244107536">📞 +233 24 410 7536</a></li>
+          <li><a>⏰ Mon–Fri: 7AM–10PM</a></li>
+          <li><a>⏰ Sat: 8AM–11PM</a></li>
+          <li><a>⏰ Sun: 9AM–9PM</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 White House Restaurant · Osu, Accra, Ghana</p>
+      <p>GH₵50 – GH₵250 · Rating: 4.1/5</p>
+    </div>
+  </div>
+</footer>
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+

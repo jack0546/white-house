@@ -244,67 +244,6 @@ function selectDelivery(mode) {
   renderCheckout();
 }
 
-function initiatePayment() {
-  const name = document.getElementById('cust-name').value.trim();
-  const phone = document.getElementById('cust-phone').value.trim();
-  const email = document.getElementById('cust-email').value.trim();
-  const address = document.getElementById('cust-address').value.trim();
-  
-  if (!name) { showToast('⚠️ Please enter your name.'); return; }
-  if (!phone) { showToast('⚠️ Please enter your phone number.'); return; }
-  if (!email) { showToast('⚠️ Please enter your email for payment.'); return; }
-  if (deliveryMode === 'delivery' && !address) { showToast('⚠️ Please enter your delivery address.'); return; }
-  if (cart.length === 0) { showToast('⚠️ Your cart is empty!'); return; }
-  
-  const sub = getSubtotal();
-  const fee = deliveryMode === 'delivery' ? DELIVERY_FEE : 0;
-  const grand = sub + fee;
-  
-  const handler = PaystackPop.setup({
-    key: 'pk_live_6b9968065dc0bd4842c97ffa138e49127c862888',
-    email: email,
-    amount: grand * 100,
-    currency: 'GHS',
-    ref: 'WHR-' + Date.now(),
-    metadata: {
-      customer_name: name,
-      customer_phone: phone,
-      delivery_address: deliveryMode === 'delivery' ? address : deliveryMode.toUpperCase(),
-      order_type: deliveryMode
-    },
-    callback: function(response) {
-      const orderNum = response.reference;
-      const order = { 
-        num: orderNum, 
-        name, 
-        phone, 
-        address, 
-        items: [...cart], 
-        sub, 
-        fee, 
-        grand, 
-        type: deliveryMode, 
-        status: 'Paid', 
-        date: new Date().toLocaleDateString('en-GB'), 
-        notes: document.getElementById('order-notes').value,
-        email: email,
-        transaction: response.transaction
-      };
-      orders.push(order);
-      showReceipt(order, true);
-      cart = [];
-      updateCartCount();
-      renderCart();
-      updateAdminStats();
-      showToast('✅ Payment successful! Order placed.');
-    },
-    onClose: function() {
-      showToast('⚠️ Payment cancelled. You can try again.');
-    }
-  });
-  handler.openIframe();
-}
-
 function renderCheckout() {
   const itemsList = document.getElementById('checkout-items-list');
   const totalsEl = document.getElementById('checkout-totals');
@@ -355,14 +294,30 @@ function updateWhatsAppLink() {
 }
 
 function placeOrder() {
-   initiatePayment();
+  const name = document.getElementById('cust-name').value.trim();
+  const phone = document.getElementById('cust-phone').value.trim();
+  const address = document.getElementById('cust-address').value.trim();
+  if (!name) { showToast('⚠️ Please enter your name.'); return; }
+  if (!phone) { showToast('⚠️ Please enter your phone number.'); return; }
+  if (deliveryMode === 'delivery' && !address) { showToast('⚠️ Please enter your delivery address.'); return; }
+  if (cart.length === 0) { showToast('⚠️ Your cart is empty!'); return; }
+  const orderNum = 'WHR-' + Date.now().toString().slice(-6);
+  const sub = getSubtotal();
+  const fee = deliveryMode === 'delivery' ? DELIVERY_FEE : 0;
+  const grand = sub + fee;
+  const order = { num: orderNum, name, phone, address, items: [...cart], sub, fee, grand, type: deliveryMode, status: 'Pending', date: new Date().toLocaleDateString('en-GB'), notes: document.getElementById('order-notes').value };
+  orders.push(order);
+  showReceipt(order);
+  cart = [];
+  updateCartCount();
+  renderCart();
+  updateAdminStats();
 }
 
 // ======= RECEIPT =======
-function showReceipt(order, isPaid = false) {
+function showReceipt(order) {
   const modal = document.getElementById('receipt-modal');
   const content = document.getElementById('receipt-content');
-  const statusBadge = isPaid ? '✅ Paid' : '✅ Order Received';
   content.innerHTML = `
     <div class="receipt-header">
       <div class="receipt-logo">WHITE HOUSE RESTAURANT<span>Accra, Ghana</span></div>
@@ -389,14 +344,14 @@ function showReceipt(order, isPaid = false) {
       <div class="receipt-total-line"><span>Delivery Fee</span><span>${order.fee > 0 ? 'GH₵' + order.fee : 'Free'}</span></div>
       <div class="receipt-total-line grand"><span>Grand Total</span><span class="rv">GH₵${order.grand}</span></div>
     </div>
-    <div class="receipt-status"><span class="receipt-status-badge">${statusBadge}</span></div>
+    <div class="receipt-status"><span class="receipt-status-badge">✅ Order Received</span></div>
     ${order.notes ? `<p style="font-size:0.8rem;color:#6B5A3A;margin:8px 0"><strong>Notes:</strong> ${order.notes}</p>` : ''}
     <div class="receipt-footer">
       <p>Thank you for your order! 🙏</p>
-      <p style="margin-top:4px">Payment confirmed via Paystack.</p>
+      <p style="margin-top:4px">We'll confirm via WhatsApp shortly.</p>
       <p style="margin-top:4px;color:#C9A84C">White House Restaurant · Osu, Accra</p>
     </div>`;
-  const waMsg = encodeURIComponent(`Order # ${order.num} receipt from White House Restaurant — GH₵${order.grand} total. Payment: Confirmed via Paystack.`);
+  const waMsg = encodeURIComponent(`Order # ${order.num} receipt from White House Restaurant — GH₵${order.grand} total.`);
   document.getElementById('wa-receipt-btn').onclick = () => window.open(`https://wa.me/?text=${waMsg}`, '_blank');
   modal.classList.add('open');
 }
